@@ -1,19 +1,15 @@
+#!/usr/bin/python3
 import os
 import sys
 import random
-import time
 
 
-def child_process(child_num):
-
+def child_process():
     sleep_time = random.randint(5, 10)
-    pid = os.getpid()
-    ppid = os.getppid()
-    print(f"Child[{child_num}]: I am started. My PID {pid}. Parent PID {ppid}.")
-    time.sleep(sleep_time)
-    exit_status = random.choice([0, 1])
-    print(f"Child[{child_num}]: I am ended. PID {pid}. Parent PID {ppid}.")
-    sys.exit(exit_status)
+    child_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'child.py')
+    args = [child_script, str(sleep_time)]
+    os.execve(child_script, args, os.environ)
+    print("Child process failed to execute child.py")
 
 
 if __name__ == "__main__":
@@ -28,7 +24,7 @@ if __name__ == "__main__":
     for i in range(1, N + 1):
         pid = os.fork()
         if pid == 0:
-            child_process(i)
+            child_process()
         else:
             child_processes.append(pid)
 
@@ -41,6 +37,6 @@ if __name__ == "__main__":
             print(f"Parent[{os.getpid()}]: Child with PID {child_pid} terminated. Restarting.")
             new_pid = os.fork()
             if new_pid == 0:
-                child_process(child_pid)
+                child_process()
 
     print(f"Parent[{os.getpid()}]: All children have terminated.")
