@@ -32,11 +32,12 @@ if __name__ == "__main__":
         _, status = os.waitpid(child_pid, 0)
         if os.WIFEXITED(status):
             exit_status = os.WEXITSTATUS(status)
-            print(f"Parent[{os.getpid()}]: Child with PID {child_pid} terminated. Exit Status {exit_status}")
-        else:
-            print(f"Parent[{os.getpid()}]: Child with PID {child_pid} terminated. Restarting.")
-            new_pid = os.fork()
-            if new_pid == 0:
-                child_process()
+            if exit_status == 0:
+                print(f"Parent[{os.getpid()}]: Child with PID {child_pid} terminated. Exit Status {exit_status}")
+            else:
+                print(f"Parent[{os.getpid()}]: Child with PID {child_pid} terminated. Exit Status {exit_status}")
+                new_pid = os.fork()
+                if new_pid == 0:
+                    child_process()
 
     print(f"Parent[{os.getpid()}]: All children have terminated.")
