@@ -4,16 +4,14 @@ import sys
 import time
 import random
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python child.py <S>")
-        sys.exit(1)
+child_pid = os.getpid()
+parent_pid = os.getppid()
 
-    sleep_time = int(sys.argv[1])
-    pid = os.getpid()
-    ppid = os.getppid()
-    print(f"Child[{pid}]: I am started. My PID {pid}. Parent PID {ppid}.")
-    time.sleep(sleep_time)
-    exit_status = random.choice([0, 1])
-    print(f"Child[{pid}]: I am ended. PID {pid}. Parent PID {ppid}.")
-    sys.exit(exit_status)
+print(f'Child[{child_pid}]: I am started. My PID {child_pid}. Parent PID {parent_pid}')
+
+sleep_time = int(sys.argv[1])
+time.sleep(sleep_time)
+
+print(f'Child[{child_pid}]: I am ended. My PID {child_pid}. Parent PID {parent_pid}')
+exit_status = random.choice([0, 1])
+os._exit(exit_status)
